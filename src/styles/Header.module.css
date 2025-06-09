@@ -78,6 +78,23 @@
   color: #333;
 }
 
+.navLink.active {
+  color: #333;
+  font-weight: 600;
+  position: relative;
+}
+
+.navLink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #ff4757, #ff6b9d, #3742fa);
+  border-radius: 1px;
+}
+
 .jostFont {
   font-family: var(--font-jost);
 }

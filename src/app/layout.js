@@ -1,5 +1,6 @@
 import { Jost, Nunito } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 const jost = Jost({
   subsets: ["latin"],
@@ -54,6 +55,7 @@ export default function RootLayout({ children }) {
         className={`${jost.variable} ${nunito.variable} antialiased`}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );

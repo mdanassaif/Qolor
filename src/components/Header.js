@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import styles from '../styles/Header.module.css';
 
 export default function Header() {
   const [currentColor, setCurrentColor] = useState('#ff4757');
+  const pathname = usePathname();
 
   useEffect(() => {
     const colors = [
@@ -48,10 +50,16 @@ export default function Header() {
           </div>
         </Link>
         <nav className={styles.nav}>
-          <Link href="/collection" className={styles.navLink}>
+          <Link 
+            href="/collection" 
+            className={`${styles.navLink} ${pathname === '/collection' ? styles.active : ''}`}
+          >
             Collection
           </Link>
-          <Link href="/about" className={styles.navLink}>
+          <Link 
+            href="/about" 
+            className={`${styles.navLink} ${pathname === '/about' ? styles.active : ''}`}
+          >
             About
           </Link>
         </nav>

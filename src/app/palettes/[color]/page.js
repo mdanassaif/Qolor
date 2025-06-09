@@ -4,8 +4,8 @@ import PaletteCard from '../../../components/PaletteCard';
 import { palettesData } from '../../../data/palettes';
 import styles from '../../../styles/Home.module.css';
 
-export default function ColorPalettes({ params }) {
-  const { color } = params;
+export default async function ColorPalettes({ params }) {
+  const { color } = await params;
   // Only get palettes for the selected color category
   const palettes = palettesData[color] || [];
 
@@ -26,7 +26,7 @@ export default function ColorPalettes({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-  const { color } = params;
+  const { color } = await params;
   return {
     title: `${color.charAt(0).toUpperCase() + color.slice(1)} Color Palettes`,
     description: `Explore ${color} color palettes`,
