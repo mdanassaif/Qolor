@@ -47,7 +47,7 @@ export default function PaletteCard({ palette }) {
   const handleTryClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    router.push(`/demo-design?palette=${encodeURIComponent(JSON.stringify(palette))}`);
+    router.push(`/demo-design?colors=${encodeURIComponent(JSON.stringify(palette.colors))}`);
   };
 
   return (

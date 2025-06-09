@@ -78,6 +78,10 @@
   color: #333;
 }
 
+.jostFont {
+  font-family: var(--font-jost);
+}
+
 @media (max-width: 768px) {
   .container {
     flex-direction: column;

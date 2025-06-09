@@ -43,7 +43,7 @@ export default function Header() {
             />
             <div className={styles.logoText}>
               {/* <h1 className={styles.brandName}>Qolor</h1> */}
-              <span className={styles.tagline}>handcurated color palettes<br/> for developers :)</span>
+              <span className={`${styles.tagline} ${styles.jostFont}`}>handcurated color palettes<br/> for developers :)</span>
             </div>
           </div>
         </Link>

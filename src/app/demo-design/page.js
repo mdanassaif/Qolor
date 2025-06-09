@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import styles from './demo-design.module.css';
 import { useSearchParams } from 'next/navigation';
 
 export default function DemoDesign() {
   const [selectedPalette, setSelectedPalette] = useState([]);
+  const [originalPalette, setOriginalPalette] = useState([]);
   const [customColor, setCustomColor] = useState('#333333');
   const [previewMode, setPreviewMode] = useState('desktop'); // 'desktop', 'tablet', or 'mobile'
   const [previewStyles, setPreviewStyles] = useState({
@@ -24,31 +25,7 @@ export default function DemoDesign() {
     }
   });
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const palette = params.get('palette');
-    if (palette) {
-      try {
-        const parsedPalette = JSON.parse(decodeURIComponent(palette));
-        const colors = Array.isArray(parsedPalette) ? parsedPalette : 
-                      (parsedPalette.colors && Array.isArray(parsedPalette.colors)) ? parsedPalette.colors : [];
-        
-        // Initialize with custom color for text
-        const initialColors = [...colors];
-        initialColors[1] = customColor; // navbar text
-        initialColors[3] = customColor; // hero text
-        initialColors[5] = customColor; // footer text
-        
-        setSelectedPalette(initialColors);
-        updatePreviewStyles(initialColors);
-      } catch (error) {
-        console.error('Error parsing palette:', error);
-        setSelectedPalette([]);
-      }
-    }
-  }, [customColor, updatePreviewStyles]);
-
-  const updatePreviewStyles = (colors) => {
+  const updatePreviewStyles = useCallback((colors) => {
     setPreviewStyles({
       navbar: {
         backgroundColor: colors[0] || '#ffffff',
@@ -63,10 +40,32 @@ export default function DemoDesign() {
         color: colors[5] || customColor
       }
     });
-  };
+  }, [customColor]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const colors = params.get('colors');
+    if (colors) {
+      try {
+        const parsedColors = JSON.parse(decodeURIComponent(colors));
+        // Initialize with custom color for text elements
+        const initialColors = [...parsedColors];
+        initialColors[1] = customColor; // navbar text
+        initialColors[3] = customColor; // hero text
+        initialColors[7] = customColor; // primary button text
+        
+        setOriginalPalette(parsedColors);
+        setSelectedPalette(initialColors);
+        updatePreviewStyles(initialColors);
+      } catch (error) {
+        console.error('Error parsing colors:', error);
+        setSelectedPalette([]);
+        setOriginalPalette([]);
+      }
+    }
+  }, [customColor, updatePreviewStyles]);
 
   const handleColorChange = (element, color) => {
-    console.log('Color change:', element, color);
     const newColors = [...selectedPalette];
     switch(element) {
       case 'navbarBg':
@@ -86,6 +85,15 @@ export default function DemoDesign() {
         break;
       case 'footerText':
         newColors[5] = color;
+        break;
+      case 'buttonBg':
+        newColors[6] = color;
+        break;
+      case 'buttonText':
+        newColors[7] = color;
+        break;
+      case 'secondaryButton':
+        newColors[8] = color;
         break;
     }
     setSelectedPalette(newColors);
@@ -110,9 +118,9 @@ export default function DemoDesign() {
             </Link>
           </div>
 
-          {selectedPalette.length > 0 && (
+          {originalPalette.length > 0 && (
             <div className={styles.paletteColors}>
-              {selectedPalette.map((color, index) => (
+              {originalPalette.map((color, index) => (
                 <div
                   key={index}
                   className={styles.colorPreview}
@@ -138,11 +146,11 @@ export default function DemoDesign() {
             <div className={styles.colorControl}>
               <label>Navbar Background</label>
               <select 
-                value={selectedPalette[0] || customColor}
+                value={selectedPalette[0] || '#ffffff'}
                 onChange={(e) => handleColorChange('navbarBg', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -157,7 +165,7 @@ export default function DemoDesign() {
                 onChange={(e) => handleColorChange('navbarText', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -168,11 +176,11 @@ export default function DemoDesign() {
             <div className={styles.colorControl}>
               <label>Hero Background</label>
               <select 
-                value={selectedPalette[2] || customColor}
+                value={selectedPalette[2] || '#f8f9fa'}
                 onChange={(e) => handleColorChange('heroBg', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -187,37 +195,7 @@ export default function DemoDesign() {
                 onChange={(e) => handleColorChange('heroText', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
-                  <option key={index} value={color}>
-                    Color {index + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.colorControl}>
-              <label>Button Background</label>
-              <select 
-                value={selectedPalette[4] || customColor}
-                onChange={(e) => handleColorChange('buttonBg', e.target.value)}
-              >
-                <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
-                  <option key={index} value={color}>
-                    Color {index + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.colorControl}>
-              <label>Button Text</label>
-              <select 
-                value={selectedPalette[5] || customColor}
-                onChange={(e) => handleColorChange('buttonText', e.target.value)}
-              >
-                <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -228,11 +206,11 @@ export default function DemoDesign() {
             <div className={styles.colorControl}>
               <label>Footer Background</label>
               <select 
-                value={selectedPalette[4] || customColor}
+                value={selectedPalette[4] || '#ffffff'}
                 onChange={(e) => handleColorChange('footerBg', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -247,7 +225,52 @@ export default function DemoDesign() {
                 onChange={(e) => handleColorChange('footerText', e.target.value)}
               >
                 <option value={customColor}>Custom</option>
-                {selectedPalette.map((color, index) => (
+                {originalPalette.map((color, index) => (
+                  <option key={index} value={color}>
+                    Color {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.colorControl}>
+              <label>Primary Button Background</label>
+              <select 
+                value={selectedPalette[6] || customColor}
+                onChange={(e) => handleColorChange('buttonBg', e.target.value)}
+              >
+                <option value={customColor}>Custom</option>
+                {originalPalette.map((color, index) => (
+                  <option key={index} value={color}>
+                    Color {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.colorControl}>
+              <label>Primary Button Text</label>
+              <select 
+                value={selectedPalette[7] || customColor}
+                onChange={(e) => handleColorChange('buttonText', e.target.value)}
+              >
+                <option value={customColor}>Custom</option>
+                {originalPalette.map((color, index) => (
+                  <option key={index} value={color}>
+                    Color {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.colorControl}>
+              <label>Secondary Button Color</label>
+              <select 
+                value={selectedPalette[8] || customColor}
+                onChange={(e) => handleColorChange('secondaryButton', e.target.value)}
+              >
+                <option value={customColor}>Custom</option>
+                {originalPalette.map((color, index) => (
                   <option key={index} value={color}>
                     Color {index + 1}
                   </option>
@@ -304,8 +327,8 @@ export default function DemoDesign() {
                   <button 
                     className={styles.primaryButton}
                     style={{ 
-                      backgroundColor: selectedPalette[4] || customColor,
-                      color: selectedPalette[5] || customColor
+                      backgroundColor: selectedPalette[6] || customColor,
+                      color: selectedPalette[7] || customColor
                     }}
                   >
                     Get Started
@@ -314,8 +337,8 @@ export default function DemoDesign() {
                     className={styles.secondaryButton}
                     style={{ 
                       backgroundColor: 'transparent',
-                      color: selectedPalette[4] || customColor,
-                      border: `2px solid ${selectedPalette[4] || customColor}`
+                      color: selectedPalette[8] || customColor,
+                      border: `2px solid ${selectedPalette[8] || customColor}`
                     }}
                   >
                     Learn More
