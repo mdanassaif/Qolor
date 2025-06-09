@@ -1,0 +1,60 @@
+.filterBar {
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  padding: 16px 0;
+  overflow-x: auto;
+  position: sticky;
+  top: 72px;
+  z-index: 99;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.filterButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid #dee2e6;
+  background: white;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+  color: #333;
+}
+
+.filterButton:hover {
+  border-color: var(--filter-color);
+  color: var(--filter-color);
+}
+
+.filterButton.active {
+  background: var(--filter-color);
+  border-color: var(--filter-color);
+  color: white;
+}
+
+.filterColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--filter-color);
+  transition: transform 0.2s;
+}
+
+.filterButton:hover .filterColor {
+  transform: scale(1.2);
+}
+
+.filterButton.active .filterColor {
+  background: white;
+}

@@ -1,0 +1,100 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.main {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.section {
+  margin-bottom: 40px;
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section h2 {
+  color: #333;
+  margin-bottom: 24px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.intro {
+  color: #666;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  color: #666;
+  line-height: 2;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+}
+
+.steps {
+  color: #666;
+  line-height: 2;
+  font-size: 1.1rem;
+  padding-left: 24px;
+}
+
+.steps li {
+  margin-bottom: 12px;
+}
+
+.pageTitle {
+  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 32px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 60px;
+  padding: 20px;
+  color: #666;
+}
+
+.footer a {
+  color: #4a90e2;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.footer a:hover {
+  color: #357abd;
+}
+
+@media (max-width: 768px) {
+  .main {
+    padding: 24px 16px;
+  }
+  
+  .section {
+    padding: 24px;
+  }
+  
+  .pageTitle {
+    font-size: 2rem;
+  }
+  
+  .intro, .features li, .steps {
+    font-size: 1rem;
+  }
+} 
