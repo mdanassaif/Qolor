@@ -11,7 +11,7 @@ export default function About() {
         <section className={styles.section}>
           <p className={styles.intro}>
             Qolor is a simple yet powerful tool that helps you discover and use beautiful color palettes in your projects. 
-            Whether you're designing a website, creating an app, or working on any visual project, Qolor makes it easy to find 
+            Whether you&apos;re designing a website, creating an app, or working on any visual project, Qolor makes it easy to find 
             the perfect colors.
           </p>
         </section>

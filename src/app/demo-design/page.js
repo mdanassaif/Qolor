@@ -46,7 +46,7 @@ export default function DemoDesign() {
         setSelectedPalette([]);
       }
     }
-  }, []);
+  }, [customColor, updatePreviewStyles]);
 
   const updatePreviewStyles = (colors) => {
     setPreviewStyles({
