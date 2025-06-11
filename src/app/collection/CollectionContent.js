@@ -10,7 +10,7 @@ export default function CollectionContent() {
   useEffect(() => {
     // Load favorites from localStorage
     const loadFavorites = () => {
-      const favorites = JSON.parse(localStorage.getItem('favoritePalettes') || '[]');
+      const favorites = JSON.parse(localStorage.getItem('culrs_collection') || '[]');
       setFavoritePalettes(favorites);
     };
 
@@ -18,7 +18,7 @@ export default function CollectionContent() {
 
     // Listen for changes in localStorage
     const handleStorageChange = (e) => {
-      if (e.key === 'favoritePalettes') {
+      if (e.key === 'culrs_collection') {
         loadFavorites();
       }
     };

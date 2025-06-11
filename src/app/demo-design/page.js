@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { FaCopy, FaEye, FaUndo, FaRandom, FaPalette } from 'react-icons/fa';
 import styles from './demo-design.module.css';
 import { useSearchParams } from 'next/navigation';
 
@@ -9,7 +10,9 @@ export default function DemoDesign() {
   const [selectedPalette, setSelectedPalette] = useState([]);
   const [originalPalette, setOriginalPalette] = useState([]);
   const [customColor, setCustomColor] = useState('#333333');
-  const [previewMode, setPreviewMode] = useState('desktop'); // 'desktop', 'tablet', or 'mobile'
+  const [previewMode, setPreviewMode] = useState('desktop');
+  const [showCopyToast, setShowCopyToast] = useState(false);
+  const [copiedColor, setCopiedColor] = useState('');
   const [previewStyles, setPreviewStyles] = useState({
     navbar: {
       backgroundColor: '#ffffff',
@@ -48,11 +51,10 @@ export default function DemoDesign() {
     if (colors) {
       try {
         const parsedColors = JSON.parse(decodeURIComponent(colors));
-        // Initialize with custom color for text elements
         const initialColors = [...parsedColors];
-        initialColors[1] = customColor; // navbar text
-        initialColors[3] = customColor; // hero text
-        initialColors[7] = customColor; // primary button text
+        initialColors[1] = customColor;
+        initialColors[3] = customColor;
+        initialColors[7] = customColor;
         
         setOriginalPalette(parsedColors);
         setSelectedPalette(initialColors);
@@ -102,10 +104,34 @@ export default function DemoDesign() {
 
   const handleCopy = (color) => {
     navigator.clipboard.writeText(color);
+    setCopiedColor(color);
+    setShowCopyToast(true);
+    setTimeout(() => setShowCopyToast(false), 2000);
   };
 
   const handlePreviewClick = (mode) => {
     setPreviewMode(mode);
+  };
+
+  const handleReset = () => {
+    const initialColors = [...originalPalette];
+    initialColors[1] = customColor;
+    initialColors[3] = customColor;
+    initialColors[7] = customColor;
+    setSelectedPalette(initialColors);
+    updatePreviewStyles(initialColors);
+  };
+
+  const handleRandomize = () => {
+    const newColors = [...selectedPalette];
+    for (let i = 0; i < newColors.length; i++) {
+      if (i % 2 === 0) { // Only randomize background colors
+        const randomIndex = Math.floor(Math.random() * originalPalette.length);
+        newColors[i] = originalPalette[randomIndex];
+      }
+    }
+    setSelectedPalette(newColors);
+    updatePreviewStyles(newColors);
   };
 
   return (
@@ -116,6 +142,14 @@ export default function DemoDesign() {
             <Link href="/" className={styles.backButton}>
               ← Back to Home
             </Link>
+            <div className={styles.headerActions}>
+              <button onClick={handleReset} className={styles.actionButton} title="Reset to original">
+                <FaUndo />
+              </button>
+              <button onClick={handleRandomize} className={styles.actionButton} title="Randomize colors">
+                <FaRandom />
+              </button>
+            </div>
           </div>
 
           {originalPalette.length > 0 && (
@@ -127,7 +161,9 @@ export default function DemoDesign() {
                   style={{ backgroundColor: color }}
                   onClick={() => handleCopy(color)}
                   title={`Click to copy ${color}`}
-                />
+                >
+                  <span className={styles.colorHex}>{color}</span>
+                </div>
               ))}
             </div>
           )}
@@ -287,74 +323,78 @@ export default function DemoDesign() {
                 className={`${styles.previewButton} ${previewMode === 'desktop' ? styles.active : ''}`}
                 onClick={() => handlePreviewClick('desktop')}
               >
-                Desktop
+                <FaEye /> Desktop
               </button>
               <button 
                 className={`${styles.previewButton} ${previewMode === 'tablet' ? styles.active : ''}`}
                 onClick={() => handlePreviewClick('tablet')}
               >
-                Tablet
+                <FaEye /> Tablet
               </button>
               <button 
                 className={`${styles.previewButton} ${previewMode === 'mobile' ? styles.active : ''}`}
                 onClick={() => handlePreviewClick('mobile')}
               >
-                Mobile
+                <FaEye /> Mobile
               </button>
             </div>
           </div>
 
-          <div 
-            className={`${styles.previewContent} ${previewMode !== 'desktop' ? styles[previewMode] : ''}`}
-            onClick={() => previewMode !== 'desktop' && handlePreviewClick('desktop')}
-          >
-            <nav className={styles.previewNav} style={previewStyles.navbar}>
-              <div className={styles.navContent}>
-                <div className={styles.navBrand}>Brand</div>
-                <div className={styles.navLinks}>
-                  <a href="#">Home</a>
-                  <a href="#">About</a>
-                  <a href="#">Contact</a>
+          <div className={styles.previewWrapper}>
+            <div 
+              className={`${styles.previewContent} ${previewMode !== 'desktop' ? styles[previewMode] : ''}`}
+            >
+              <nav className={styles.previewNav} style={previewStyles.navbar}>
+                <div className={styles.navContent}>
+                  <div className={styles.navBrand}>
+                    <FaPalette /> Brand
+                  </div>
                 </div>
-              </div>
-            </nav>
+              </nav>
 
-            <section className={styles.heroSection} style={previewStyles.hero}>
-              <div className={styles.heroContent}>
-                <h1>Create Beautiful Designs</h1>
-                <p>Transform your ideas into stunning visuals with our powerful design tools.</p>
-                <div className={styles.heroButtons}>
-                  <button 
-                    className={styles.primaryButton}
-                    style={{ 
-                      backgroundColor: selectedPalette[6] || customColor,
-                      color: selectedPalette[7] || customColor
-                    }}
-                  >
-                    Get Started
-                  </button>
-                  <button 
-                    className={styles.secondaryButton}
-                    style={{ 
-                      backgroundColor: 'transparent',
-                      color: selectedPalette[8] || customColor,
-                      border: `2px solid ${selectedPalette[8] || customColor}`
-                    }}
-                  >
-                    Learn More
-                  </button>
+              <section className={styles.heroSection} style={previewStyles.hero}>
+                <div className={styles.heroContent}>
+                  <h1>Create Beautiful Designs</h1>
+                  <p>Transform your ideas into stunning visuals with our powerful design tools.</p>
+                  <div className={styles.heroButtons}>
+                    <button 
+                      className={styles.primaryButton}
+                      style={{ 
+                        backgroundColor: selectedPalette[6] || customColor,
+                        color: selectedPalette[1] || customColor
+                      }}
+                    >
+                      Get Started
+                    </button>
+                    <button 
+                      className={styles.secondaryButton}
+                      style={{ 
+                        backgroundColor: 'transparent',
+                        color: selectedPalette[8] || customColor,
+                        border: `2px solid ${selectedPalette[8] || customColor}`
+                      }}
+                    >
+                      Learn More
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <div className={styles.footer} style={previewStyles.footer}>
-              <div className={styles.footerContent}>
-                <p>© 2024 Culrs. All rights reserved.</p>
+              <div className={styles.footer} style={previewStyles.footer}>
+                <div className={styles.footerContent}>
+                  <p>© 2024 Culrs. All rights reserved.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </main>
+
+      {showCopyToast && (
+        <div className={styles.copyToast}>
+          <FaCopy /> Copied {copiedColor}!
+        </div>
+      )}
     </div>
   );
 } 

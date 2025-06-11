@@ -14,7 +14,7 @@ export default function PaletteCard({ palette }) {
 
   useEffect(() => {
     // Check if palette is in favorites on component mount
-    const favorites = JSON.parse(localStorage.getItem('favoritePalettes') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('culrs_collection') || '[]');
     setIsLiked(favorites.some(fav => fav.name === palette.name));
   }, [palette.name]);
 
@@ -22,12 +22,16 @@ export default function PaletteCard({ palette }) {
     e.preventDefault();
     e.stopPropagation();
     
-    const favorites = JSON.parse(localStorage.getItem('favoritePalettes') || '[]');
+    const favorites = JSON.parse(localStorage.getItem('culrs_collection') || '[]');
     const newFavorites = isLiked
       ? favorites.filter(fav => fav.name !== palette.name)
-      : [...favorites, palette];
+      : [...favorites, {
+          ...palette,
+          source: 'home',
+          timestamp: new Date().toISOString()
+        }];
     
-    localStorage.setItem('favoritePalettes', JSON.stringify(newFavorites));
+    localStorage.setItem('culrs_collection', JSON.stringify(newFavorites));
     setIsLiked(!isLiked);
   };
 

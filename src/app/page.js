@@ -6,9 +6,26 @@ import PaletteCard from '../components/PaletteCard';
 import { palettesData } from '../data/palettes';
 import styles from '../styles/Home.module.css';
 
+// Function to get a deterministic random number based on date
+const getSeededRandom = () => {
+  const today = new Date();
+  const seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+  return (seed * 9301 + 49297) % 233280 / 233280;
+};
+
+// Function to shuffle array deterministically
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(getSeededRandom() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 export default function Home() {
-  // Show all palettes on home page
-  const allPalettes = Object.values(palettesData).flat();
+  // Get all palettes and shuffle them deterministically
+  const allPalettes = shuffleArray([...Object.values(palettesData).flat()]);
 
   return (
     <div className={styles.container}>

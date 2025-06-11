@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import styles from '../styles/Header.module.css';
 
 export default function Header() {
   const [currentColor, setCurrentColor] = useState('#ff4757');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -31,6 +33,11 @@ export default function Header() {
     return () => clearInterval(interval);
   }, []);
 
+  // Close menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -49,7 +56,23 @@ export default function Header() {
             </div>
           </div>
         </Link>
-        <nav className={styles.nav}>
+
+        <button 
+          className={styles.menuButton}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isMenuOpen}
+        >
+          {isMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+
+        <nav className={`${styles.nav} ${isMenuOpen ? styles.navOpen : ''}`}>
+          <Link 
+            href="/ai-palette" 
+            className={`${styles.navLink} ${pathname === '/ai-palette' ? styles.active : ''}`}
+          >
+            AI Generator
+          </Link>
           <Link 
             href="/collection" 
             className={`${styles.navLink} ${pathname === '/collection' ? styles.active : ''}`}
