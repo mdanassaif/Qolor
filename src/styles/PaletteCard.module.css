@@ -30,6 +30,27 @@
   transform: scale(1.05);
 }
 
+.colorHex {
+    position: absolute;
+    bottom: 8px;
+    left: 1px;
+    background: rgb(0 0 0 / 62%);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 0.2s ease, translate 0.2s;
+    z-index: 100;
+    scale: 1;
+}
+
+.color:hover .colorHex {
+    opacity: 1;
+    scale: 1.1;
+    translate: 0 -35%;
+}
+
 .copyIndicator {
   position: absolute;
   top: 50%;

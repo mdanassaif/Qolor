@@ -64,7 +64,9 @@ export default function PaletteCard({ palette }) {
             style={{ backgroundColor: color }}
             onClick={(e) => handleCopy(e, color)}
             title={`Click to copy ${color}`}
-          />
+          >
+            <span className={styles.colorHex}>{color}</span>
+          </div>
         ))}
         {showCopyIndicator && (
           <div className={styles.copyIndicator}>
